@@ -19,28 +19,31 @@ int main() {
     // ===== Definir os navios ===== //
     int navioHorizontal[TAM_NAVIO] = {NAVIO, NAVIO, NAVIO};
     int navioVertical[TAM_NAVIO]   = {NAVIO, NAVIO, NAVIO};
+    int navioDiagonal1[TAM_NAVIO]  = {NAVIO, NAVIO, NAVIO}; // ↘ diagonal
+    int navioDiagonal2[TAM_NAVIO]  = {NAVIO, NAVIO, NAVIO}; // ↙ diagonal
 
-    // Coordenadas iniciais (definidas no código)
-    int linhaH = 2, colunaH = 4; // Navio horizontal começa na linha 2, coluna 4
-    int linhaV = 5, colunaV = 7; // Navio vertical começa na linha 5, coluna 7
+    // ===== Coordenadas iniciais ===== //
+    int linhaH = 2, colunaH = 4; // Navio horizontal
+    int linhaV = 5, colunaV = 7; // Navio vertical
+    int linhaD1 = 1, colunaD1 = 1; // Navio diagonal ↘
+    int linhaD2 = 1, colunaD2 = 8; // Navio diagonal ↙
 
-    // ===== 3. Validar e posicionar o navio horizontal =====
-    if (colunaH + TAM_NAVIO <= TAM) { // Cabe no tabuleiro?
+    // ===== Validar e posicionar o navio horizontal ===== //
+    if (colunaH + TAM_NAVIO <= TAM) { 
         for (j = 0; j < TAM_NAVIO; j++) {
             tabuleiro[linhaH][colunaH + j] = navioHorizontal[j];
         }
     } else {
         printf("Erro: navio horizontal fora dos limites!\n");
-        return 1; // Encerra o programa
+        return 1;
     }
 
     // ===== Validar e posicionar o navio vertical ===== //
-    if (linhaV + TAM_NAVIO <= TAM) { // Cabe no tabuleiro?
+    if (linhaV + TAM_NAVIO <= TAM) { 
         int sobreposicao = 0;
         for (i = 0; i < TAM_NAVIO; i++) {
-            if (tabuleiro[linhaV + i][colunaV] == NAVIO) {
+            if (tabuleiro[linhaV + i][colunaV] == NAVIO)
                 sobreposicao = 1;
-            }
         }
 
         if (!sobreposicao) {
@@ -56,9 +59,50 @@ int main() {
         return 1;
     }
 
-    // ===== Exibição do tabuleiro ===== //
-    printf("\n=== TABULEIRO DE BATALHA NAVAL ===\n\n");
+    // ===== Validar e posicionar o navio diagonal ↘ ===== //
+    if (linhaD1 + TAM_NAVIO <= TAM && colunaD1 + TAM_NAVIO <= TAM) {
+        int sobreposicao = 0;
+        for (i = 0; i < TAM_NAVIO; i++) {
+            if (tabuleiro[linhaD1 + i][colunaD1 + i] == NAVIO)
+                sobreposicao = 1;
+        }
 
+        if (!sobreposicao) {
+            for (i = 0; i < TAM_NAVIO; i++) {
+                tabuleiro[linhaD1 + i][colunaD1 + i] = navioDiagonal1[i];
+            }
+        } else {
+            printf("Erro: sobreposição de navio diagonal ↘ detectada!\n");
+            return 1;
+        }
+    } else {
+        printf("Erro: navio diagonal ↘ fora dos limites!\n");
+        return 1;
+    }
+
+    // ===== Validar e posicionar o navio diagonal ↙ ===== //
+    if (linhaD2 + TAM_NAVIO <= TAM && colunaD2 - (TAM_NAVIO - 1) >= 0) {
+        int sobreposicao = 0;
+        for (i = 0; i < TAM_NAVIO; i++) {
+            if (tabuleiro[linhaD2 + i][colunaD2 - i] == NAVIO)
+                sobreposicao = 1;
+        }
+
+        if (!sobreposicao) {
+            for (i = 0; i < TAM_NAVIO; i++) {
+                tabuleiro[linhaD2 + i][colunaD2 - i] = navioDiagonal2[i];
+            }
+        } else {
+            printf("Erro: sobreposição de navio diagonal ↙ detectada!\n");
+            return 1;
+        }
+    } else {
+        printf("Erro: navio diagonal ↙ fora dos limites!\n");
+        return 1;
+    }
+
+    // ===== Exibir o tabuleiro ===== //
+    printf("\n=== TABULEIRO DE BATALHA NAVAL ===\n\n");
     for (i = 0; i < TAM; i++) {
         for (j = 0; j < TAM; j++) {
             printf("%d ", tabuleiro[i][j]);
@@ -77,7 +121,15 @@ int main() {
         printf("Parte %d -> Linha: %d | Coluna: %d\n", i + 1, linhaV + i, colunaV);
     }
 
+    printf("\nCoordenadas do Navio Diagonal ↘:\n");
+    for (i = 0; i < TAM_NAVIO; i++) {
+        printf("Parte %d -> Linha: %d | Coluna: %d\n", i + 1, linhaD1 + i, colunaD1 + i);
+    }
+
+    printf("\nCoordenadas do Navio Diagonal ↙:\n");
+    for (i = 0; i < TAM_NAVIO; i++) {
+        printf("Parte %d -> Linha: %d | Coluna: %d\n", i + 1, linhaD2 + i, colunaD2 - i);
+    }
+
     return 0;
 }
-
-
